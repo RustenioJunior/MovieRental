@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MovieRental.Rental;
+﻿using MovieRental.Rental;
+using Microsoft.AspNetCore.Mvc;
 using MovieRental.Customer;
 using MovieRental.DTOs.Rental;    // ✅ Import dos DTOs centralizados
 
@@ -30,7 +30,7 @@ namespace MovieRental.Controllers
                 if (customer == null)
                     return BadRequest($"Customer with ID {request.CustomerId} not found");
 
-                var rental = new Rental
+                var rental = new Rental.Rental
                 {
                     CustomerId = request.CustomerId,
                     MovieId = request.MovieId,

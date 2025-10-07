@@ -20,7 +20,7 @@ namespace MovieRental.Rental
         public int CustomerId { get; set; }
 
         [ForeignKey("CustomerId")]
-        public Customer Customer { get; set; }
+        public MovieRental.Customer.Customer Customer { get; set; }
         public DateTime RentalDate { get; set; } = DateTime.UtcNow;
         public DateTime? ReturnDate { get; set; }
     }
