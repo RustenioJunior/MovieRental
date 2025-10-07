@@ -20,7 +20,8 @@ namespace MovieRental.Controllers
         [HttpPost]
         public async Task <IActionResult> Post([FromBody] Rental.Rental rental)
         {
-	        return Ok(_features.Save(rental));
+            var result = await _features.SaveAsync(rental);
+            return Ok(result);
         }
 
 	}
