@@ -13,13 +13,13 @@ namespace MovieRental.Rental
         private readonly IPaymentProviderFactory _paymentFactory;
 
         public RentalFeatures(
-            MovieRentalDbContext context,
+            MovieRentalDbContext movieRentalDb,
             ILogger<RentalFeatures> logger,
             IPaymentProviderFactory paymentFactory)
         {
-            _context = context;
-            _logger = logger;
-            _paymentFactory = paymentFactory;
+            _movieRentalDb = movieRentalDb ?? throw new ArgumentNullException(nameof(movieRentalDb));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _paymentFactory = paymentFactory ?? throw new ArgumentNullException(nameof(paymentFactory));
         }
 
         public async Task<Rental> SaveAsync(Rental rental)
@@ -127,15 +127,32 @@ namespace MovieRental.Rental
         //TODO: finish this method and create an endpoint for it //done
         public async Task<IEnumerable<Rental>> GetRentalsByCustomerNameAsync(string customerName)
         {
-            if (string.IsNullOrWhiteSpace(customerName))    
+            // ✅ VERIFICAÇÃO CRÍTICA
+            if (_movieRentalDb == null)
+                throw new InvalidOperationException("DbContext não foi injetado corretamente");
+
+            if (string.IsNullOrWhiteSpace(customerName))
                 return Enumerable.Empty<Rental>();
 
-            return await _movieRentalDb.Rentals
-            .Include(r => r.Customer) 
-            .Include(r => r.Movie)    
-            .Where(r => r.Customer.Name.Contains(customerName)) 
-            .OrderByDescending(r => r.RentalDate)
-            .ToListAsync();
+            try
+            {
+                Console.WriteLine($"🔍 Buscando rentals no banco para: {customerName}");
+
+                var rentals = await _movieRentalDb.Rentals
+                    .Include(r => r.Customer)
+                    .Include(r => r.Movie)
+                    .Where(r => r.Customer != null && r.Customer.Name.Contains(customerName))
+                    .OrderByDescending(r => r.RentalDate)
+                    .ToListAsync();
+
+                Console.WriteLine($"✅ Encontrados {rentals.Count} rentals no banco");
+                return rentals;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ ERRO: {ex}");
+                throw;
+            }
         }
 
     }

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Customer = MovieRental.Customer.Customer;
+using CustomerEntity = MovieRental.Customer.Customer;  // ✅ Alias
+using MovieEntity = MovieRental.Movie.Movie;           // ✅ Alias
 
 namespace MovieRental.Rental
 {
@@ -9,25 +10,24 @@ namespace MovieRental.Rental
         [Key]
         public int Id { get; set; }
         public int DaysRented { get; set; }
-        public Movie.Movie? Movie { get; set; }
 
-        [ForeignKey("Movie")]
+        public MovieEntity? Movie { get; set; }  // ✅ Usando alias
+
+        [ForeignKey("MovieId")]
         public int MovieId { get; set; }
 
-        // ✅ PaymentMethod agora determina qual provider usar
         [Required]
         [RegularExpression("^(mbway|paypal|credit|debit)$", ErrorMessage = "Invalid payment method")]
-        public string PaymentMethod { get; set; }
+        public string PaymentMethod { get; set; } = string.Empty;
 
         public int CustomerId { get; set; }
 
         [ForeignKey("CustomerId")]
-        public Customer.Customer Customer { get; set; }
+        public CustomerEntity Customer { get; set; } = null!; // ✅ Usando alias
 
         public DateTime RentalDate { get; set; } = DateTime.UtcNow;
         public DateTime? ReturnDate { get; set; }
 
-        // ✅ Novos campos para pagamento
         public string TransactionId { get; set; }
         public decimal AmountPaid { get; set; }
         public bool PaymentProcessed { get; set; }

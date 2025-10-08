@@ -75,7 +75,7 @@ namespace MovieRental.Controllers
                     Id = r.Id,
                     DaysRented = r.DaysRented,
                     MovieTitle = r.Movie?.Title ?? "Unknown",
-                    CustomerName = r.Customer.Name,
+                    CustomerName = r.Customer?.Name ?? "Unknown Customer",
                     PaymentMethod = r.PaymentMethod,
                     RentalDate = r.RentalDate
                 });

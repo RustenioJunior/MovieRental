@@ -183,7 +183,20 @@
                                         <GridViewColumn Header="Status" Width="80">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <TextBlock Text="{Binding IsOverdue, Converter={StaticResource BooleanToStatusConverter}}"/>
+                                                    <TextBlock>
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <Setter Property="Text" Value="No Prazo"/>
+                                                                <Setter Property="Foreground" Value="Green"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsOverdue}" Value="True">
+                                                                        <Setter Property="Text" Value="Atrasado"/>
+                                                                        <Setter Property="Foreground" Value="Red"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>

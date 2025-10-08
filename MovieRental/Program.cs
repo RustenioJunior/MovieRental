@@ -26,6 +26,7 @@ builder.Services.AddScoped<IPaymentProviderFactory, PaymentProviderFactory>();
 builder.Services.AddScoped<IRentalFeatures, RentalFeatures>();
 builder.Services.AddScoped<ICustomerFeatures, CustomerFeatures>();
 builder.Services.AddScoped<IMovieFeatures, MovieFeatures>();
+builder.Services.AddDbContext<MovieRentalDbContext>();
 
 var app = builder.Build();
 
