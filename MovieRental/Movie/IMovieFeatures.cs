@@ -1,8 +1,9 @@
-﻿namespace MovieRental.Movie;
-
-public interface IMovieFeatures
+﻿namespace MovieRental.Movie
 {
-	Movie Save(Movie movie);
-    Task<List<Movie>> GetAll(); 
-    Task<List<Movie>> GetPaginated(int page, int pageSize); 
+    public interface IMovieFeatures
+    {
+        Task<Movie> SaveAsync(Movie movie);
+        Task<Movie> GetMovieByIdAsync(int id);
+        Task<List<Movie>> GetAllAsync();
+    }
 }

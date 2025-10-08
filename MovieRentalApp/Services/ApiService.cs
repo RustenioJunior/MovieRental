@@ -7,11 +7,12 @@ namespace MovieRentalApp.Services
     public class ApiService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _baseUrl = "https://localhost:5219"; // Ajuste para sua porta
+        private readonly string _baseUrl = "https://localhost:44321"; // Ajuste para sua porta
 
         public ApiService()
         {
             _httpClient = new HttpClient();
+            _baseUrl = "https://localhost:44321";
             _httpClient.BaseAddress = new Uri(_baseUrl);
             _httpClient.Timeout = TimeSpan.FromSeconds(30);
         }
