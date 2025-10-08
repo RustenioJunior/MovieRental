@@ -1,7 +1,9 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using MovieRentalApp.Models;
+﻿using MovieRentalApp.Models;
 using MovieRentalApp.Services;
+using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace MovieRentalApp
 {
@@ -104,22 +106,58 @@ namespace MovieRentalApp
             }
         }
 
+        // Validação para permitir apenas números no ano
+        private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
         private async void CreateMovie_Click(object sender, RoutedEventArgs e)
         {
+            // Validações dos novos campos
             if (string.IsNullOrWhiteSpace(txtMovieTitle.Text))
             {
                 MessageBox.Show("Título é obrigatório", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
+            if (cmbMovieGenre.SelectedItem == null)
+            {
+                MessageBox.Show("Gênero é obrigatório", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtMovieDescription.Text))
+            {
+                MessageBox.Show("Descrição é obrigatória", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (!int.TryParse(txtMovieReleaseYear.Text, out int releaseYear) || releaseYear < 1900 || releaseYear > 2100)
+            {
+                MessageBox.Show("Ano de lançamento deve ser entre 1900 e 2100", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             try
             {
-                var request = new CreateMovieRequest { Title = txtMovieTitle.Text.Trim() };
+                var request = new CreateMovieRequest
+                {
+                    Title = txtMovieTitle.Text.Trim(),
+                    Genre = (cmbMovieGenre.SelectedItem as ComboBoxItem)?.Content.ToString(),
+                    Description = txtMovieDescription.Text.Trim(),
+                    ReleaseYear = releaseYear
+                    // Adicione outros campos se necessário: Director, Price, etc.
+                };
+
                 var movie = await _apiService.CreateMovieAsync(request);
 
                 MessageBox.Show($"Filme '{movie.Title}' criado com ID: {movie.Id}", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                txtMovieTitle.Text = "";
+                // Limpar todos os campos
+                ClearMovieForm();
+
                 // ✅ AGORA FUNCIONA
                 await LoadMovies_Click(null, null);
             }
@@ -127,6 +165,15 @@ namespace MovieRentalApp
             {
                 MessageBox.Show($"Erro ao criar filme: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        // Método para limpar o formulário (adicione este método)
+        private void ClearMovieForm()
+        {
+            txtMovieTitle.Text = "";
+            cmbMovieGenre.SelectedIndex = -1;
+            txtMovieReleaseYear.Text = DateTime.Now.Year.ToString();
+            txtMovieDescription.Text = "";
         }
 
         // 💳 ALUGUÉIS - CORRIGIDOS

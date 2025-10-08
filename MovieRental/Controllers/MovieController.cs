@@ -40,7 +40,7 @@ namespace MovieRental.Controllers
                 Title = request.Title
             };
 
-            var result = await _features.SaveAsync(movie);
+            var result = await _features.CreateMovieAsync(movie);
 
             var response = new MovieResponse
             {

@@ -6,7 +6,7 @@ namespace MovieRental.DTOs.Movie
     {
         [Required]
         [StringLength(100)]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         [StringLength(500)]
         public string Description { get; set; }
@@ -22,7 +22,7 @@ namespace MovieRental.DTOs.Movie
 public class MovieResponse
 {
     public int Id { get; set; }
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
     public string Description { get; set; }
     public int ReleaseYear { get; set; }
     public string Genre { get; set; }

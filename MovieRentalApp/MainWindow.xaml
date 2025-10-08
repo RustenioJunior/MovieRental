@@ -77,14 +77,46 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                                <TextBlock Text="Título:" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                <TextBox x:Name="txtMovieTitle" Grid.Column="1" Height="25"/>
+                                <!-- Título -->
+                                <TextBlock Text="Título:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,5"/>
+                                <TextBox x:Name="txtMovieTitle" Grid.Row="0" Grid.Column="1" Height="25" Margin="0,0,0,5"/>
+
+                                <!-- Gênero -->
+                                <TextBlock Text="Gênero:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,5"/>
+                                <ComboBox x:Name="cmbMovieGenre" Grid.Row="1" Grid.Column="1" Height="25" Margin="0,0,0,5">
+                                    <ComboBoxItem Content="Ação"/>
+                                    <ComboBoxItem Content="Comédia"/>
+                                    <ComboBoxItem Content="Drama"/>
+                                    <ComboBoxItem Content="Ficção Científica"/>
+                                    <ComboBoxItem Content="Terror"/>
+                                    <ComboBoxItem Content="Romance"/>
+                                    <ComboBoxItem Content="Aventura"/>
+                                    <ComboBoxItem Content="Suspense"/>
+                                    <ComboBoxItem Content="Animação"/>
+                                </ComboBox>
+
+                                <!-- Ano de Lançamento -->
+                                <TextBlock Text="Ano:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,5"/>
+                                <TextBox x:Name="txtMovieReleaseYear" Grid.Row="2" Grid.Column="1" Height="25" Margin="0,0,0,5"
+                     Text="2024" PreviewTextInput="NumberValidationTextBox"/>
+
+                                <!-- Descrição -->
+                                <TextBlock Text="Descrição:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Top" Margin="0,5,10,5"/>
+                                <TextBox x:Name="txtMovieDescription" Grid.Row="3" Grid.Column="1" Height="60" 
+                     TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,5"/>
                             </Grid>
 
                             <Button x:Name="btnCreateMovie" Content="Criar Filme" 
-                                    Click="CreateMovie_Click" Margin="0,10,0,0" Height="30" 
-                                    Background="#007ACC" Foreground="White"/>
+                Click="CreateMovie_Click" Margin="0,10,0,0" Height="30" 
+                Background="#007ACC" Foreground="White"/>
                         </StackPanel>
                     </GroupBox>
 
