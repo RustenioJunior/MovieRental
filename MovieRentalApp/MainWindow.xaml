@@ -1,0 +1,201 @@
+﻿<Window x:Class="MovieRentalApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Sistema de Locação de Filmes" Height="700" Width="900"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid Margin="10">
+        <TabControl>
+
+            <!-- 📋 ABA CLIENTES -->
+            <TabItem Header="📋 Clientes">
+                <StackPanel Margin="10">
+
+                    <!-- Formulário Novo Cliente -->
+                    <GroupBox Header="➕ Novo Cliente" Padding="10" Margin="0,0,0,10">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Nome:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,5"/>
+                                <TextBox x:Name="txtCustomerName" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" Height="25"/>
+
+                                <TextBlock Text="Email:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,5"/>
+                                <TextBox x:Name="txtCustomerEmail" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" Height="25"/>
+
+                                <TextBlock Text="Telefone:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <TextBox x:Name="txtCustomerPhone" Grid.Row="2" Grid.Column="1" Height="25"/>
+                            </Grid>
+
+                            <Button x:Name="btnCreateCustomer" Content="Criar Cliente" 
+                                    Click="CreateCustomer_Click" Margin="0,10,0,0" Height="30" 
+                                    Background="#007ACC" Foreground="White"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <!-- Lista de Clientes -->
+                    <GroupBox Header="👥 Lista de Clientes">
+                        <StackPanel>
+                            <Button x:Name="btnLoadCustomers" Content="🔄 Carregar Clientes" 
+                                    Click="LoadCustomersButton_Click" Margin="5" Height="30"/>
+
+                            <ListView x:Name="lstCustomers" Height="250">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="ID" Width="50" DisplayMemberBinding="{Binding Id}"/>
+                                        <GridViewColumn Header="Nome" Width="150" DisplayMemberBinding="{Binding Name}"/>
+                                        <GridViewColumn Header="Email" Width="200" DisplayMemberBinding="{Binding Email}"/>
+                                        <GridViewColumn Header="Telefone" Width="120" DisplayMemberBinding="{Binding Phone}"/>
+                                        <GridViewColumn Header="Criado em" Width="120" DisplayMemberBinding="{Binding CreatedAt, StringFormat=dd/MM/yyyy}"/>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </StackPanel>
+                    </GroupBox>
+
+                </StackPanel>
+            </TabItem>
+
+            <!-- 🎬 ABA FILMES -->
+            <TabItem Header="🎬 Filmes">
+                <StackPanel Margin="10">
+
+                    <!-- Formulário Novo Filme -->
+                    <GroupBox Header="➕ Novo Filme" Padding="10" Margin="0,0,0,10">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="Título:" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <TextBox x:Name="txtMovieTitle" Grid.Column="1" Height="25"/>
+                            </Grid>
+
+                            <Button x:Name="btnCreateMovie" Content="Criar Filme" 
+                                    Click="CreateMovie_Click" Margin="0,10,0,0" Height="30" 
+                                    Background="#007ACC" Foreground="White"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <!-- Lista de Filmes -->
+                    <GroupBox Header="📀 Lista de Filmes">
+                        <StackPanel>
+                            <Button x:Name="btnLoadMovies" Content="🔄 Carregar Filmes" 
+                                    Click="LoadMoviesButton_Click" Margin="5" Height="30"/>
+
+                            <ListView x:Name="lstMovies" Height="250">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="ID" Width="50" DisplayMemberBinding="{Binding Id}"/>
+                                        <GridViewColumn Header="Título" Width="300" DisplayMemberBinding="{Binding Title}"/>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </StackPanel>
+                    </GroupBox>
+
+                </StackPanel>
+            </TabItem>
+
+            <!-- 💳 ABA ALUGUÉIS -->
+            <TabItem Header="💳 Aluguéis">
+                <StackPanel Margin="10">
+
+                    <!-- Formulário Novo Aluguel -->
+                    <GroupBox Header="🔄 Novo Aluguel" Padding="10" Margin="0,0,0,10">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Cliente:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,5"/>
+                                <ComboBox x:Name="cmbCustomers" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" Height="25"
+                                          DisplayMemberPath="Name"/>
+
+                                <TextBlock Text="Filme:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,5"/>
+                                <ComboBox x:Name="cmbMovies" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" Height="25"
+                                          DisplayMemberPath="Title"/>
+
+                                <TextBlock Text="Dias:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,5"/>
+                                <TextBox x:Name="txtRentalDays" Grid.Row="2" Grid.Column="1" Margin="0,0,0,5" Height="25" Text="3"/>
+
+                                <TextBlock Text="Pagamento:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <ComboBox x:Name="cmbPaymentMethod" Grid.Row="3" Grid.Column="1" Height="25" SelectedIndex="0">
+                                    <ComboBoxItem Content="MBWay"/>
+                                    <ComboBoxItem Content="PayPal"/>
+                                    <ComboBoxItem Content="Cartão de Débito"/>
+                                    <ComboBoxItem Content="Cartão de Crédito"/>
+                                </ComboBox>
+                            </Grid>
+
+                            <Button x:Name="btnCreateRental" Content="Criar Aluguel" 
+                                    Click="CreateRental_Click" Margin="0,10,0,0" Height="30" 
+                                    Background="#28a745" Foreground="White"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <!-- Buscar Aluguéis por Cliente -->
+                    <GroupBox Header="🔍 Buscar Aluguéis por Cliente" Padding="10">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="Nome do Cliente:" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <TextBox x:Name="txtSearchCustomer" Grid.Column="1" Height="25"/>
+                                <Button x:Name="btnSearchRentals" Content="🔍 Buscar" Grid.Column="2" 
+                                        Click="SearchRentals_Click" Margin="10,0,0,0" Height="25" Width="80"/>
+                            </Grid>
+
+                            <ListView x:Name="lstRentals" Height="200" Margin="0,10,0,0">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="ID" Width="40" DisplayMemberBinding="{Binding Id}"/>
+                                        <GridViewColumn Header="Filme" Width="120" DisplayMemberBinding="{Binding MovieTitle}"/>
+                                        <GridViewColumn Header="Cliente" Width="120" DisplayMemberBinding="{Binding CustomerName}"/>
+                                        <GridViewColumn Header="Pagamento" Width="100" DisplayMemberBinding="{Binding PaymentMethod}"/>
+                                        <GridViewColumn Header="Dias" Width="50" DisplayMemberBinding="{Binding DaysRented}"/>
+                                        <GridViewColumn Header="Alugado em" Width="100" DisplayMemberBinding="{Binding RentalDate, StringFormat=dd/MM/yyyy}"/>
+                                        <GridViewColumn Header="Devolução" Width="100" DisplayMemberBinding="{Binding ExpectedReturnDate, StringFormat=dd/MM/yyyy}"/>
+                                        <GridViewColumn Header="Status" Width="80">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding IsOverdue, Converter={StaticResource BooleanToStatusConverter}}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </StackPanel>
+                    </GroupBox>
+
+                </StackPanel>
+            </TabItem>
+
+        </TabControl>
+    </Grid>
+</Window>
