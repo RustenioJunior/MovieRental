@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using MovieRental.Exceptions;
 using System.Net;
 using System.Text.Json;
@@ -11,6 +13,7 @@ namespace MovieRental.Middlewares
         private readonly ILogger<GlobalExceptionMiddleware> _logger;
         private readonly IHostEnvironment _env;
 
+        // ✅ CONSTRUTOR CORRETO - RequestDelegate vem do ASP.NET Core
         public GlobalExceptionMiddleware(
             RequestDelegate next,
             ILogger<GlobalExceptionMiddleware> logger,
@@ -41,7 +44,6 @@ namespace MovieRental.Middlewares
 
             switch (exception)
             {
-                // ✅ CUSTOMER EXCEPTIONS
                 case CustomerNotFoundException ex:
                     context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                     problemDetails.Title = "Customer not found";
@@ -49,14 +51,6 @@ namespace MovieRental.Middlewares
                     _logger.LogWarning(ex, "Customer not found");
                     break;
 
-                case CustomerEmailAlreadyExistsException ex:
-                    context.Response.StatusCode = (int)HttpStatusCode.Conflict;
-                    problemDetails.Title = "Customer already exists";
-                    problemDetails.Detail = ex.Message;
-                    _logger.LogWarning(ex, "Customer email conflict");
-                    break;
-
-                // ✅ MOVIE EXCEPTIONS  
                 case MovieNotFoundException ex:
                     context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                     problemDetails.Title = "Movie not found";
@@ -64,7 +58,6 @@ namespace MovieRental.Middlewares
                     _logger.LogWarning(ex, "Movie not found");
                     break;
 
-                // ✅ PAYMENT EXCEPTIONS
                 case PaymentFailedException ex:
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     problemDetails.Title = "Payment failed";
@@ -72,35 +65,13 @@ namespace MovieRental.Middlewares
                     _logger.LogWarning(ex, "Payment failed");
                     break;
 
-                case InsufficientFundsException ex:
-                    context.Response.StatusCode = (int)HttpStatusCode.PaymentRequired;
-                    problemDetails.Title = "Insufficient funds";
-                    problemDetails.Detail = ex.Message;
-                    _logger.LogWarning(ex, "Insufficient funds");
-                    break;
-
-                // ✅ EXCEPTIONS GERAIS
                 case ArgumentException ex:
-                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    problemDetails.Title = "Invalid request parameter";
-                    problemDetails.Detail = ex.Message;
-                    _logger.LogWarning(ex, "Invalid argument: {Message}", ex.Message);
-                    break;
-                case InvalidOperationException ex:
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     problemDetails.Title = "Invalid request";
                     problemDetails.Detail = ex.Message;
-                    _logger.LogWarning(ex, "Invalid request");
+                    _logger.LogWarning(ex, "Invalid argument");
                     break;
 
-                case UnauthorizedAccessException ex:
-                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                    problemDetails.Title = "Unauthorized";
-                    problemDetails.Detail = ex.Message;
-                    _logger.LogWarning(ex, "Unauthorized access");
-                    break;
-
-                // ✅ ERRO INTERNO (genérico)
                 default:
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     problemDetails.Title = "Internal server error";

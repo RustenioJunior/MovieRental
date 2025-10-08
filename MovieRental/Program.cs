@@ -7,48 +7,36 @@ using MovieRental.Rental;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Logging.AddConsole(); // Simple Logging 
+builder.Logging.AddConsole();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddEntityFrameworkSqlite().AddDbContext<MovieRentalDbContext>();
-builder.Services.AddTransient<GlobalExceptionMiddleware>();
+builder.Services.AddEntityFrameworkSqlite().AddDbContext<MovieRentalDbContext>();
 
-// REGISTER PAYMENT PROVIDERS
+// ✅ REGISTRAR PAYMENT PROVIDERS
 builder.Services.AddScoped<MbWayProvider>();
 builder.Services.AddScoped<PayPalProvider>();
 builder.Services.AddScoped<DebitCardProvider>();
 builder.Services.AddScoped<CreditCardProvider>();
 builder.Services.AddScoped<IPaymentProviderFactory, PaymentProviderFactory>();
 
-// ✅ Registrar outros serviços existentes
+// ✅ Registrar serviços
 builder.Services.AddScoped<IRentalFeatures, RentalFeatures>();
 builder.Services.AddScoped<ICustomerFeatures, CustomerFeatures>();
 builder.Services.AddScoped<IMovieFeatures, MovieFeatures>();
 
 var app = builder.Build();
 
-// ✅ CORREÇÃO: Middleware global PRIMEIRO
-app.UseGlobalExceptionHandler(); // ← DEVE VIR PRIMEIRO!
+app.UseGlobalExceptionHandler();
 
 // environment handling
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseDeveloperExceptionPage(); // Detailed stack traces for debugging
 }
-else
-{
-    app.UseExceptionHandler("/error"); // Clean responses in production
-}
-
-// Universal error path
-app.Map("/error", () => Results.Problem(
-    title: "Something went wrong",
-    statusCode: StatusCodes.Status500InternalServerError
-));
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
@@ -58,5 +46,18 @@ using (var client = new MovieRentalDbContext())
 {
     client.Database.EnsureCreated();
 }
+// checkdb
+app.MapGet("/check-db", (MovieRentalDbContext context) =>
+{
+    var canConnect = context.Database.CanConnect();
+    var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "movierental.db");
+
+    return Results.Ok(new
+    {
+        databaseExists = File.Exists(dbPath),
+        canConnect = canConnect,
+        dbPath = dbPath
+    });
+});
 
 app.Run();
