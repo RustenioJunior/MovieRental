@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieRental.Data;
+using MovieRental.Exceptions;
+using MovieRentalCustomer = MovieRental.Customer.Customer;
 
 namespace MovieRental.Customer
 {
@@ -12,30 +14,41 @@ namespace MovieRental.Customer
             _context = context;
         }
 
-        public async Task<Customer> CreateCustomerAsync(Customer customer)
+        public async Task<MovieRentalCustomer> CreateCustomerAsync(MovieRentalCustomer customer)
         {
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
             return customer;
         }
 
-        public async Task<Customer> GetCustomerByIdAsync(int id)
+        public async Task<MovieRentalCustomer> GetCustomerByIdAsync(int id)
         {
-            return await _context.Customers
-                .FirstOrDefaultAsync(c => c.Id == id);
+            var customer = await _context.Customers.FindAsync(id);
+            if (customer == null)
+                throw new CustomerNotFoundException(id);
+            return customer;
         }
 
-        public async Task<IEnumerable<Customer>> GetCustomersByNameAsync(string name)
+        public async Task<IEnumerable<MovieRentalCustomer>> GetAllCustomersAsync()
         {
-            return await _context.Customers
-                .Where(c => c.Name.Contains(name))
-                .ToListAsync();
+            return await _context.Customers.ToListAsync(); 
         }
 
-        public async Task<Customer> GetCustomerByEmailAsync(string email)
+        public async Task<MovieRentalCustomer> GetCustomerByEmailAsync(string email)
         {
             return await _context.Customers
                 .FirstOrDefaultAsync(c => c.Email == email);
+        }
+
+        public async Task<IEnumerable<MovieRentalCustomer>> GetCustomersByNameAsync(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return Enumerable.Empty<MovieRentalCustomer>();
+
+            return await _context.Customers
+                .Where(c => c.Name.Contains(name))
+                .OrderBy(c => c.Name)
+                .ToListAsync();
         }
     }
 }

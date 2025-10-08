@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MovieRental.Movie;
+using MovieRental.Exceptions;
 
 namespace MovieRental.Controllers
 {

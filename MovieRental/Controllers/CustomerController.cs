@@ -15,68 +15,69 @@ namespace MovieRental.Controllers
             _features = features;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerRequest request)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            try
-            {
-                // Convert DTO request to Entity    
-                var customer = new Customer.Customer
-                {
-                    Name = request.Name,
-                    Email = request.Email,
-                    Phone = request.Phone
-                };
-
-                // call the feature to create the customer from interface
-                var result = await _features.CreateCustomerAsync(customer);
-
-                // Convert DTO response to Entity 
-                var response = new CustomerResponse
-                {
-                    Id = result.Id,
-                    Name = result.Name,
-                    Email = result.Email,
-                    Phone = result.Phone,
-                    CreatedAt = result.CreatedAt
-                };
-
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Error creating customer: {ex.Message}");
-            }
-        }
-
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCustomerById(int id)
         {
-            try
+            // ✅ ZERO try-catch! O middleware cuida de tudo
+            var customer = await _features.GetCustomerByIdAsync(id);
+            
+            var response = new CustomerResponse
             {
-                var customer = await _features.GetCustomerByIdAsync(id);
+                Id = customer.Id,
+                Name = customer.Name,
+                Email = customer.Email,
+                Phone = customer.Phone,
+                CreatedAt = customer.CreatedAt
+            };
 
-                if (customer == null)
-                    return NotFound($"Customer with ID {id} not found");
+            return Ok(response);
+        }
 
-                var response = new CustomerResponse
-                {
-                    Id = customer.Id,
-                    Name = customer.Name,
-                    Email = customer.Email,
-                    Phone = customer.Phone,
-                    CreatedAt = customer.CreatedAt
-                };
+        [HttpPost]
+        public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerRequest request)
+        {
+            // ✅ Apenas validação do ModelState
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-                return Ok(response);
-            }
-            catch (Exception ex)
+            // ✅ Lógica limpa - exceptions são tratadas pelo middleware
+            var customer = new Customer.Customer
             {
-                return StatusCode(500, $"Error retrieving customer: {ex.Message}");
-            }
+                Name = request.Name,
+                Email = request.Email,
+                Phone = request.Phone
+            };
+
+            var result = await _features.CreateCustomerAsync(customer);
+            
+            var response = new CustomerResponse
+            {
+                Id = result.Id,
+                Name = result.Name,
+                Email = result.Email,
+                Phone = result.Phone,
+                CreatedAt = result.CreatedAt
+            };
+
+            return CreatedAtAction(nameof(GetCustomerById), new { id = result.Id }, response);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllCustomers()
+        {
+            // ✅ Também sem try-catch
+            var customers = await _features.GetAllCustomersAsync();
+            
+            var response = customers.Select(c => new CustomerResponse
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Email = c.Email,
+                Phone = c.Phone,
+                CreatedAt = c.CreatedAt
+            });
+
+            return Ok(response);
         }
     }
 }

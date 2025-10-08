@@ -1,7 +1,8 @@
 ﻿using MovieRental.Rental;
 using Microsoft.AspNetCore.Mvc;
 using MovieRental.Customer;
-using MovieRental.DTOs.Rental;    // ✅ Import dos DTOs centralizados
+using MovieRental.DTOs.Rental;    // Import centralized DTOs 
+using MovieRental.Exceptions;
 
 namespace MovieRental.Controllers
 {
