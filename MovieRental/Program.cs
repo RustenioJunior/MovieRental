@@ -15,10 +15,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddEntityFrameworkSqlite().AddDbContext<MovieRentalDbContext>();
 builder.Services.AddTransient<GlobalExceptionMiddleware>();
 
-// ✅ REGISTRAR PAYMENT PROVIDERS
+// REGISTER PAYMENT PROVIDERS
 builder.Services.AddScoped<MbWayProvider>();
 builder.Services.AddScoped<PayPalProvider>();
 builder.Services.AddScoped<DebitCardProvider>();
+builder.Services.AddScoped<CreditCardProvider>();
 builder.Services.AddScoped<IPaymentProviderFactory, PaymentProviderFactory>();
 
 // ✅ Registrar outros serviços existentes
@@ -28,13 +29,15 @@ builder.Services.AddScoped<IMovieFeatures, MovieFeatures>();
 
 var app = builder.Build();
 
+// ✅ CORREÇÃO: Middleware global PRIMEIRO
+app.UseGlobalExceptionHandler(); // ← DEVE VIR PRIMEIRO!
+
 // environment handling
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseDeveloperExceptionPage(); // Detailed stack traces for debugging
-    app.UseGlobalExceptionHandler();
 }
 else
 {

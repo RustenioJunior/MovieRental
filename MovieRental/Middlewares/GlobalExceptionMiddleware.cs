@@ -81,6 +81,11 @@ namespace MovieRental.Middlewares
 
                 // ✅ EXCEPTIONS GERAIS
                 case ArgumentException ex:
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    problemDetails.Title = "Invalid request parameter";
+                    problemDetails.Detail = ex.Message;
+                    _logger.LogWarning(ex, "Invalid argument: {Message}", ex.Message);
+                    break;
                 case InvalidOperationException ex:
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     problemDetails.Title = "Invalid request";

@@ -75,7 +75,7 @@ namespace MovieRental.Rental
         {
             try
             {
-                var provider = _paymentProviderFactory.GetProvider(paymentMethod);
+                var provider = _paymentFactory.GetProvider(paymentMethod);
                 _logger.LogInformation(
                     "Processing {Amount:C} payment via {Provider} for customer {CustomerName}",
                     amount, provider.ProviderName, customer.Name);
