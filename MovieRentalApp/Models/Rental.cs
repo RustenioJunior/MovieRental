@@ -11,6 +11,9 @@
         public DateTime ExpectedReturnDate { get; set; }
         public bool IsOverdue { get; set; }
         public int DaysUntilReturn { get; set; }
+
+        public string TransactionId = $"TXN_{DateTime.UtcNow:yyyyMMddHHmmss}_{Guid.NewGuid().ToString("N").Substring(0, 6)}";
+
     }
 
     public class CreateRentalRequest

@@ -4,13 +4,9 @@
     {
         public int Id { get; set; }
         public int DaysRented { get; set; }
-        public string MovieTitle { get; set; }
-        public string CustomerName { get; set; }
-        public string PaymentMethod { get; set; }
-        public DateTime RentalDate { get; set; }
-        public DateTime ExpectedReturnDate => RentalDate.AddDays(DaysRented);
-
-        public bool IsOverdue => DateTime.UtcNow > ExpectedReturnDate;
-        public int DaysUntilReturn => (ExpectedReturnDate - DateTime.UtcNow).Days;
+        public string MovieTitle { get; set; } = string.Empty;
+        public string CustomerName { get; set; } = string.Empty;
+        public string PaymentMethod { get; set; } = string.Empty;
+        public DateTime RentalDate { get; set; } = DateTime.UtcNow;
     }
 }

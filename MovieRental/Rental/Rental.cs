@@ -1,17 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using CustomerEntity = MovieRental.Customer.Customer;  // ✅ Alias
-using MovieEntity = MovieRental.Movie.Movie;           // ✅ Alias
+using CustomerEntity = MovieRental.Customer.Customer;  
+using MovieEntity = MovieRental.Movie.Movie;          
 
 namespace MovieRental.Rental
 {
     public class Rental
     {
+        public Rental()
+        {
+            TransactionId = $"TXN_{DateTime.UtcNow:yyyyMMddHHmmss}";
+        }
+
         [Key]
         public int Id { get; set; }
         public int DaysRented { get; set; }
 
-        public MovieEntity? Movie { get; set; }  // ✅ Usando alias
+        public MovieEntity? Movie { get; set; }  
 
         [ForeignKey("MovieId")]
         public int MovieId { get; set; }
@@ -23,7 +28,7 @@ namespace MovieRental.Rental
         public int CustomerId { get; set; }
 
         [ForeignKey("CustomerId")]
-        public CustomerEntity Customer { get; set; } = null!; // ✅ Usando alias
+        public CustomerEntity Customer { get; set; } = null!; 
 
         public DateTime RentalDate { get; set; } = DateTime.UtcNow;
         public DateTime? ReturnDate { get; set; }
